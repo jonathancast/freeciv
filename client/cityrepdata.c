@@ -431,11 +431,29 @@ static const char *cr_entry_output(const struct city *pcity,
 }
 
 /************************************************************************
-  Returns gold surplus written to string.
+  Returns total gold written to string.
   Returned string is statically allocated and its contents change when
   this function is called again.
 *************************************************************************/
 static const char *cr_entry_gold(const struct city *pcity,
+				 const void *data)
+{
+  static char buf[8];
+
+  if (pcity->prod[O_GOLD] > 0) {
+    fc_snprintf(buf, sizeof(buf), "+%d", pcity->prod[O_GOLD]);
+  } else {
+    fc_snprintf(buf, sizeof(buf), "%3d", pcity->prod[O_GOLD]);
+  }
+  return buf;
+}
+
+/************************************************************************
+  Returns gold surplus written to string.
+  Returned string is statically allocated and its contents change when
+  this function is called again.
+*************************************************************************/
+static const char *cr_entry_gold_surplus(const struct city *pcity,
 				 const void *data)
 {
   static char buf[8];
@@ -752,6 +770,8 @@ static const struct city_report_spec base_city_report_specs[] = {
     NULL, FUNC_TAG(output) },
   { FALSE, 3, 1, NULL, N_("?Gold:G"), N_("Economy: Gold"),
     NULL, FUNC_TAG(gold) },
+  { FALSE, 3, 1, NULL, N_("?Gold:+G"), N_("Surplus: Gold"),
+    NULL, FUNC_TAG(gold_surplus) },
   { FALSE, 3, 1, NULL, N_("?Luxury:L"), N_("Economy: Luxury"),
     NULL, FUNC_TAG(luxury) },
   { FALSE, 3, 1, NULL, N_("?Science:S"), N_("Economy: Science"),
