@@ -389,6 +389,19 @@ static const char *cr_entry_foodplus(const struct city *pcity,
 }
 
 /************************************************************************
+  Returns production total written to string.
+  Returned string is statically allocated and its contents change when
+  this function is called again.
+*************************************************************************/
+static const char *cr_entry_prod(const struct city *pcity,
+				     const void *data)
+{
+  static char buf[8];
+  fc_snprintf(buf, sizeof(buf), "%3d", pcity->prod[O_SHIELD]);
+  return buf;
+}
+
+/************************************************************************
   Returns production surplus written to string.
   Returned string is statically allocated and its contents change when
   this function is called again.
@@ -441,7 +454,7 @@ static const char *cr_entry_gold(const struct city *pcity,
   static char buf[8];
 
   if (pcity->prod[O_GOLD] > 0) {
-    fc_snprintf(buf, sizeof(buf), "+%d", pcity->prod[O_GOLD]);
+    fc_snprintf(buf, sizeof(buf), "%d", pcity->prod[O_GOLD]);
   } else {
     fc_snprintf(buf, sizeof(buf), "%3d", pcity->prod[O_GOLD]);
   }
@@ -750,6 +763,9 @@ static const struct city_report_spec base_city_report_specs[] = {
     N_("?Stock/Target:(Have/Need)"),
     N_("Turns until growth/famine"),
     NULL, FUNC_TAG(growturns) },
+
+  { FALSE,  3, 1, NULL, N_("?Production [short]:P"),
+    N_("Production"), NULL, FUNC_TAG(prod) },
 
   { TRUE,  10, 1, N_("Surplus"), N_("?food/production/trade:F/P/T"),
                                  N_("Surplus: Food, Production, Trade"),
